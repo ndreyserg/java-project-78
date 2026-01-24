@@ -2,6 +2,8 @@ package hexlet.code;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatorTest {
@@ -84,5 +86,28 @@ public class ValidatorTest {
         assertTrue(s.isValid(10));
         assertFalse(s.isValid(-1));
         assertFalse(s.isValid(11));
+    }
+
+    @Test
+    public void testMapRequired() {
+        var s = (new Validator().map());
+        assertTrue(s.isValid(null));
+        s.required();
+        assertFalse(s.isValid(null));
+        assertTrue(s.isValid(new HashMap<>()));
+    }
+
+    @Test
+    public void testMapSize() {
+        var s = (new Validator().map());
+        var map = new HashMap<String, String>();
+        map.put("key1", "value1");
+        assertTrue(s.isValid(map));
+        s.sizeof(2);
+        assertFalse(s.isValid(map));
+        map.put("key2", "value2");
+        assertTrue(s.isValid(map));
+        map.put("key3", "value3");
+        assertFalse(s.isValid(map));
     }
 }
