@@ -2,46 +2,87 @@ package hexlet.code;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ValidatorTest {
 
     @Test
     public void testStringRequired() {
         var s = (new Validator()).string().required();
-        assertEquals(true, s.isValid("hello"));
-        assertEquals(false, s.isValid(""));
-        assertEquals(false, s.isValid(null));
+        assertTrue(s.isValid("hello"));
+        assertFalse(s.isValid(""));
+        assertFalse(s.isValid(null));
     }
 
     @Test
     public void testStringMinLength() {
         var s = (new Validator()).string().minLength(5);
-        assertEquals(true, s.isValid("hello"));
-        assertEquals(true, s.isValid("hello world"));
-        assertEquals(false, s.isValid("hell"));
-        assertEquals(false, s.isValid(null));
+        assertTrue(s.isValid("hello"));
+        assertTrue(s.isValid("hello world"));
+        assertFalse(s.isValid("hell"));
+        assertFalse(s.isValid(null));
     }
 
     @Test
     public void testStringContains() {
         var s = (new Validator()).string();
-        assertEquals(true, s.contains("hello").isValid("hello"));
-        assertEquals(true, s.contains("hello").isValid("hello world"));
-        assertEquals(true, s.contains("world").isValid("hello world"));
-        assertEquals(false, s.contains("world").isValid(""));
-        assertEquals(false, s.contains("world").isValid(null));
-        assertEquals(false, s.contains("world").isValid("hello"));
+        assertTrue(s.contains("hello").isValid("hello"));
+        assertTrue(s.contains("hello").isValid("hello world"));
+        assertTrue(s.contains("world").isValid("hello world"));
+        assertFalse(s.contains("world").isValid(""));
+        assertFalse(s.contains("world").isValid(null));
+        assertFalse(s.contains("world").isValid("hello"));
     }
 
     @Test
-    public void testStringMultiRules() {
+    public void testStringMultiple() {
         var s = (new Validator()).string().required()
                 .minLength(10)
                 .minLength(5)
                 .contains("hell");
 
-        assertEquals(true, s.isValid("hello"));
-        assertEquals(false, s.isValid("hell"));
+        assertTrue(s.isValid("hello"));
+        assertFalse(s.isValid("hell"));
+    }
+
+    @Test
+    public void testNumberRequired() {
+        var s = (new Validator().number());
+        assertTrue(s.isValid(null));
+        s.required();
+        assertFalse(s.isValid(null));
+        assertTrue(s.isValid(5));
+    }
+
+    @Test
+    public void testNumberPositive() {
+        var s = (new Validator().number());
+        assertTrue(s.isValid(-10));
+        s.positive();
+        assertFalse(s.isValid(-10));
+        assertTrue(s.isValid(10));
+        assertFalse(s.isValid(0));
+    }
+
+    @Test
+    public void testNumberRange() {
+        var s = (new Validator().number()).range(5, 10);
+        assertTrue(s.isValid(10));
+        assertTrue(s.isValid(5));
+        assertTrue(s.isValid(7));
+        assertFalse(s.isValid(4));
+        assertFalse(s.isValid(11));
+    }
+
+    @Test
+    public void testNumberMultiple() {
+        var s = (new Validator().number())
+                .range(-10, 10)
+                .positive();
+
+        assertTrue(s.isValid(1));
+        assertTrue(s.isValid(10));
+        assertFalse(s.isValid(-1));
+        assertFalse(s.isValid(11));
     }
 }
