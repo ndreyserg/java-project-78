@@ -99,8 +99,8 @@ public class ValidatorTest {
 
     @Test
     public void testMapSize() {
-        var s = (new Validator().map());
-        var map = new HashMap<String, String>();
+        var s = (new Validator()).map();
+        HashMap<String, String> map = new HashMap<>();
         map.put("key1", "value1");
         assertTrue(s.isValid(map));
         s.sizeof(2);
@@ -109,5 +109,31 @@ public class ValidatorTest {
         assertTrue(s.isValid(map));
         map.put("key3", "value3");
         assertFalse(s.isValid(map));
+    }
+
+    @Test
+    public void testMapShape() {
+        var v = new Validator();
+        var s = v.map();
+        var schemas = new HashMap<String, BaseSchema<String>>();
+        schemas.put("firstName", v.string().required());
+        schemas.put("lastName", v.string().required().minLength(2));
+        s.shape(schemas);
+
+        var human1 = new HashMap<String, String>();
+        human1.put("firstName", "John");
+        human1.put("lastName", "Smith");
+        assertTrue(s.isValid(human1));
+
+        var human2 = new HashMap<String, String>();
+        human2.put("firstName", "John");
+        human2.put("lastName", null);
+        assertFalse(s.isValid(human2));
+
+        var human3 = new HashMap<String, String>();
+        human3.put("firstName", "Anna");
+        human3.put("lastName", "B");
+        assertFalse(s.isValid(human3));
+
     }
 }
