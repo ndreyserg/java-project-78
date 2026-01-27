@@ -20,7 +20,8 @@ public class ValidatorTest {
 
     @Test
     public void testStringMinLength() {
-        var s = (new Validator()).string().minLength(5);
+        final int minLength = 5;
+        var s = (new Validator()).string().minLength(minLength);
         assertTrue(s.isValid("hello"));
         assertTrue(s.isValid("hello world"));
         assertFalse(s.isValid("hell"));
@@ -40,9 +41,11 @@ public class ValidatorTest {
 
     @Test
     public void testStringMultiple() {
+        final int minLengthFirst = 10;
+        final int minLengthSecond = 5;
         var s = (new Validator()).string().required()
-                .minLength(10)
-                .minLength(5)
+                .minLength(minLengthFirst)
+                .minLength(minLengthSecond)
                 .contains("hell");
 
         assertTrue(s.isValid("hello"));
@@ -51,43 +54,52 @@ public class ValidatorTest {
 
     @Test
     public void testNumberRequired() {
+        final int testValue = 5;
         var s = (new Validator().number());
         assertTrue(s.isValid(null));
         s.required();
         assertFalse(s.isValid(null));
-        assertTrue(s.isValid(5));
+        assertTrue(s.isValid(testValue));
     }
 
     @Test
     public void testNumberPositive() {
+        final int negativeValue = -10;
+        final int positiveValue = 10;
         var s = (new Validator().number());
-        assertTrue(s.isValid(-10));
+        assertTrue(s.isValid(negativeValue));
         s.positive();
-        assertFalse(s.isValid(-10));
-        assertTrue(s.isValid(10));
+        assertFalse(s.isValid(negativeValue));
+        assertTrue(s.isValid(positiveValue));
         assertFalse(s.isValid(0));
     }
 
     @Test
     public void testNumberRange() {
-        var s = (new Validator().number()).range(5, 10);
-        assertTrue(s.isValid(10));
-        assertTrue(s.isValid(5));
-        assertTrue(s.isValid(7));
-        assertFalse(s.isValid(4));
-        assertFalse(s.isValid(11));
+        final int rangeStart = 5;
+        final int rangeEnd = 10;
+        final int inRange = 7;
+        final int outOfRangeLeft = 4;
+        final int outOfRangeRight = 11;
+        var s = (new Validator().number()).range(rangeStart, rangeEnd);
+        assertTrue(s.isValid(rangeEnd));
+        assertTrue(s.isValid(rangeStart));
+        assertTrue(s.isValid(inRange));
+        assertFalse(s.isValid(outOfRangeLeft));
+        assertFalse(s.isValid(outOfRangeRight));
     }
 
     @Test
     public void testNumberMultiple() {
+        final int rangeStart = -10;
+        final int rangeEnd = 10;
+
         var s = (new Validator().number())
-                .range(-10, 10)
+                .range(rangeStart, rangeEnd)
                 .positive();
 
         assertTrue(s.isValid(1));
-        assertTrue(s.isValid(10));
-        assertFalse(s.isValid(-1));
-        assertFalse(s.isValid(11));
+        assertFalse(s.isValid(rangeStart));
     }
 
     @Test
