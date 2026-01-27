@@ -9,7 +9,7 @@ public final class NumberSchema extends BaseSchema<Integer> {
     }
 
     public NumberSchema positive() {
-        this.addRule("positive", n -> Objects.nonNull(n) && n > 0);
+        this.addRule("positive", n -> Objects.isNull(n) || n > 0);
         return this;
     }
 

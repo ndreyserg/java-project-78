@@ -72,6 +72,7 @@ public class ValidatorTest {
         assertFalse(s.isValid(negativeValue));
         assertTrue(s.isValid(positiveValue));
         assertFalse(s.isValid(0));
+        assertTrue(s.isValid(null));
     }
 
     @Test
